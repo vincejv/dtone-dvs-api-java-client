@@ -7,6 +7,7 @@ on:
 
 env:
   SONAR_PROJECT_KEY: vincejv_dtone-dvs-api-java-client
+  DEVELOPMENT_SYNC_BRANCH: development
 
 jobs:
 
@@ -42,6 +43,24 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  rebase_dev:
+    name: Sync development branch
+    runs-on: ubuntu-latest
+    needs: versioning
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+
+      - name: ReSync Branch
+        uses: Joao208/resync-branch@1.5.1
+        with:
+          PERSONAL_TOKEN: ${{ secrets.FPI_BOT_TOKEN }}
+          BRANCH_NAME: ${{ env.DEVELOPMENT_SYNC_BRANCH }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
 
   code_quality_checks:
     name: Code quality checks
@@ -86,7 +105,7 @@ jobs:
           body: ${{ needs.versioning.outputs.changelog }}
 
   deploy:
-    name: Release artifact
+    name: Release artifact to central
     runs-on: ubuntu-latest
     needs: code_quality_checks
     permissions:

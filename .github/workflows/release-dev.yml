@@ -6,12 +6,14 @@ on:
 
 env:
   SONAR_PROJECT_KEY: vincejv_dtone-dvs-api-java-client
+  MVN_ARTIFACT_ID: dvs-apiclient
 
 jobs:
 
   pre_job:
     name: Duplicate checks
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, 'docs-update(') }} # skip for commits containing 'docs-update('
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
       paths_result: ${{ steps.skip_check.outputs.paths_result }}
@@ -52,12 +54,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.qualitygate.wait=true
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.qualitygate.wait=true -Pallow-snapshots
 
   deploy:
-    name: Release artifact
+    name: Release artifact to central
     runs-on: ubuntu-latest
     needs: code_quality_checks
+    outputs:
+      artifact_version: ${{ steps.gen_ver.outputs.artifact_version }}
     permissions:
       contents: read
       packages: write
@@ -79,9 +83,53 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
+      - name: Prepare artifact version
+        id: gen_ver
+        run: |
+          echo "artifact_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
       - name: Build and release to central repo
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-        run: mvn -B deploy -Prelease-for-oss
+        run: mvn -B deploy -Prelease-for-oss,allow-snapshots
+
+  pr_update:
+    name: Pull request update
+    if: always()
+    needs: [ pre_job, deploy ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # allows job to decorate PRs with analysis results
+    steps:
+      - name: Update PR (Skip message)
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: ${{ always() && needs.pre_job.outputs.should_skip == 'true' }}
+        with:
+          message: |
+            ⚪ Skipped CI/CD as deployment was done in a previous job
+
+      - name: Update PR (Success message)
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: ${{ always() && needs.pre_job.outputs.should_skip != 'true' && needs.deploy.outputs.artifact_version != '' }}
+        with:
+          message: |
+            ✅ Released version to SNAPSHOT repository: `${{ needs.deploy.outputs.artifact_version }}`
+            
+            #### Add to your POM
+            ```xml
+            <dependency>
+              <groupId>com.vincejv</groupId>
+              <artifactId>${{ env.MVN_ARTIFACT_ID }}</artifactId>
+              <version>${{ needs.deploy.outputs.artifact_version }}</version>
+            </dependency>
+            ```
+
+      - name: Update PR (Failure message)
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: ${{ always() && needs.pre_job.outputs.should_skip != 'true' && needs.deploy.outputs.artifact_version == '' }}
+        with:
+          message: |
+            ❌ CI Build & Deployment failed, please check the [logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details
