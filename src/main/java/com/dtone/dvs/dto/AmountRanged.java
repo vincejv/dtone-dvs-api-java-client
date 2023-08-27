@@ -12,11 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Values {
+public class AmountRanged {
 
-	@JsonProperty(value = "source")
-	private Source source;
+  @JsonProperty(value = "min")
+  private Double min;
 
-	@JsonProperty(value = "destination")
-	private Source destination;
+  @JsonProperty(value = "max")
+  private Double max;
+
+  @JsonProperty(value = "increment", required = false)
+  private Double increment;
+
 }

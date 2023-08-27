@@ -8,6 +8,7 @@ import com.dtone.dvs.dto.Balance;
 import com.dtone.dvs.dto.BalanceFilter;
 import com.dtone.dvs.dto.BenefitType;
 import com.dtone.dvs.dto.Country;
+import com.dtone.dvs.dto.LookupOperatorRequest;
 import com.dtone.dvs.dto.Operator;
 import com.dtone.dvs.dto.PageAsync;
 import com.dtone.dvs.dto.Product;
@@ -15,11 +16,9 @@ import com.dtone.dvs.dto.ProductFilter;
 import com.dtone.dvs.dto.Promotion;
 import com.dtone.dvs.dto.PromotionFilter;
 import com.dtone.dvs.dto.Service;
-import com.dtone.dvs.dto.StatementDetail;
-import com.dtone.dvs.dto.StatementFilter;
+import com.dtone.dvs.dto.Transaction;
 import com.dtone.dvs.dto.TransactionFilter;
 import com.dtone.dvs.dto.TransactionRequest;
-import com.dtone.dvs.dto.TransactionResponse;
 import com.dtone.dvs.helper.DvsApiClientHelperAsync;
 
 public class DvsApiClientAsync {
@@ -169,26 +168,37 @@ public class DvsApiClientAsync {
 	}
 
 	/**
-	 * Get list of operators by mobile number, page number and records per page
-	 *
-	 * @param mobileNumber
-	 * @param pageNumber     the page number
-	 * @param recordsPerPage the number of records per page
-	 * @return list of operators
-	 */
-	public CompletableFuture<ApiResponse<List<Operator>>> lookupOperators(String mobileNumber, int pageNumber, int recordsPerPage) {
-		return this.dvsApiClientHelper.lookupOperators(mobileNumber, pageNumber, recordsPerPage);
-	}
+   * Get list of operators by mobile number, page number and records per page
+   *
+   * @param mobileNumber
+   * @param pageNumber     the page number
+   * @param recordsPerPage the number of records per page
+   * @return list of operators
+   */
+  public CompletableFuture<ApiResponse<List<Operator>>> lookupOperators(String mobileNumber, int pageNumber, int recordsPerPage) {
+    return this.dvsApiClientHelper.lookupOperators(mobileNumber, pageNumber, recordsPerPage);
+  }
 
-	// Operators - End
+  /**
+   * Get list of operators by mobile number, page number and records per page
+   * (POST)
+   *
+   * @param lookupOperatorRequest {@link LookupOperatorRequest} object
+   * @return list of operators
+   */
+  public CompletableFuture<ApiResponse<List<Operator>>> lookupOperators(LookupOperatorRequest lookupOperatorRequest) {
+    return this.dvsApiClientHelper.lookupOperators(lookupOperatorRequest);
+  }
 
-	// Benefit Types - Begin
+  // Operators - End
 
-	/**
-	 * Get benefit types
-	 *
-	 * @return paginated list of benefit types
-	 */
+  // Benefit Types - Begin
+
+  /**
+   * Get benefit types
+   *
+   * @return paginated list of benefit types
+   */
 	public CompletableFuture<PageAsync<CompletableFuture<ApiResponse<List<BenefitType>>>>> getBenefitTypes() {
 		return this.dvsApiClientHelper.getAllBenefitTypes();
 	}
@@ -320,69 +330,90 @@ public class DvsApiClientAsync {
 	
 	// Transactions - Begin
 
-	/**
-	 * Create a new transaction
-	 * 
-	 * @param transactionRequest the transaction request
-	 * @return transaction
-	 */
-	public CompletableFuture<ApiResponse<TransactionResponse>> createTransaction(TransactionRequest transactionRequest) {
-		return this.dvsApiClientHelper.postTransaction(transactionRequest);
-	}
+  /**
+   * Create a new transaction
+   *
+   * @param transactionRequest the transaction request
+   * @return transaction
+   */
+  public CompletableFuture<ApiResponse<Transaction>> createTransaction(TransactionRequest transactionRequest) {
+    return this.dvsApiClientHelper.postTransaction(transactionRequest);
+  }
 
-	/**
-	 * Get transaction by id
-	 *
-	 * @param transactionId the transaction id
-	 * @return transaction
-	 */
-	public CompletableFuture<ApiResponse<TransactionResponse>> getTransaction(Long transactionId) {
-		return this.dvsApiClientHelper.getTransaction(transactionId);
-	}
+  /**
+   * Get transactions
+   *
+   * @return paginated list of transactions
+   */
+  public CompletableFuture<PageAsync<CompletableFuture<ApiResponse<List<Transaction>>>>> getTransactions() {
+    return this.dvsApiClientHelper.getAllTransactions();
+  }
 
-	/**
-	 * Get transactions by external id
-	 * <p>
-	 * transactionFilter the TransactionFilter instance
-	 *
-	 * @return list of transactions
-	 */
-	public CompletableFuture<ApiResponse<List<TransactionResponse>>> getTransactions(TransactionFilter transactionFilter) {
-		return this.dvsApiClientHelper.getTransactions(transactionFilter, 0, 0);
-	}
+  /**
+   * Get transactions by page number and records per page
+   *
+   * @param pageNumber     the page number
+   * @param recordsPerPage the number of records per page
+   * @return list of transactions
+   */
+  public CompletableFuture<ApiResponse<List<Transaction>>> getTransactions(int pageNumber, int recordsPerPage) {
+    return this.dvsApiClientHelper.getTransactions(new TransactionFilter(), pageNumber, recordsPerPage);
+  }
 
-	/**
-	 * Get transactions by external id, page number and records per page
-	 * <p>
-	 * transactionFilter the TransactionFilter instance
-	 *
-	 * @param transactionFilter the TransactionFilter instance
-	 * @param pageNumber the current page number
-	 * @param recordsPerPage the number of records per page
-	 * @return list of transactions
-	 */
-	public CompletableFuture<ApiResponse<List<TransactionResponse>>> getTransactions(TransactionFilter transactionFilter, int pageNumber, int recordsPerPage) {
-		return this.dvsApiClientHelper.getTransactions(transactionFilter, pageNumber, recordsPerPage);
-	}
 
-	/**
-	 * Confirm a transaction
-	 *
-	 * @param transactionId the transaction id
-	 * @return transaction
-	 */
-	public CompletableFuture<ApiResponse<TransactionResponse>> confirmTransaction(Long transactionId) {
-		return this.dvsApiClientHelper.confirmTransaction(transactionId);
-	}
+  /**
+   * Get transaction by id
+   *
+   * @param transactionId the transaction id
+   * @return transaction
+   */
+  public CompletableFuture<ApiResponse<Transaction>> getTransaction(Long transactionId) {
+    return this.dvsApiClientHelper.getTransaction(transactionId);
+  }
 
-	/**
-	 * Cancel a transaction
-	 *
-	 * @param transactionId the transaction id
-	 * @return transaction
-	 */
-	public CompletableFuture<ApiResponse<TransactionResponse>> cancelTransaction(Long transactionId) {
-		return this.dvsApiClientHelper.cancelTransaction(transactionId);
+  /**
+   * Get transactions by external id
+   * <p>
+   * transactionFilter the TransactionFilter instance
+   *
+   * @return list of transactions
+   */
+  public CompletableFuture<ApiResponse<List<Transaction>>> getTransactions(TransactionFilter transactionFilter) {
+    return this.dvsApiClientHelper.getTransactions(transactionFilter, 0, 0);
+  }
+
+  /**
+   * Get transactions by external id, page number and records per page
+   * <p>
+   * transactionFilter the TransactionFilter instance
+   *
+   * @param transactionFilter the TransactionFilter instance
+   * @param pageNumber        the current page number
+   * @param recordsPerPage    the number of records per page
+   * @return list of transactions
+   */
+  public CompletableFuture<ApiResponse<List<Transaction>>> getTransactions(TransactionFilter transactionFilter, int pageNumber, int recordsPerPage) {
+    return this.dvsApiClientHelper.getTransactions(transactionFilter, pageNumber, recordsPerPage);
+  }
+
+  /**
+   * Confirm a transaction
+   *
+   * @param transactionId the transaction id
+   * @return transaction
+   */
+  public CompletableFuture<ApiResponse<Transaction>> confirmTransaction(Long transactionId) {
+    return this.dvsApiClientHelper.confirmTransaction(transactionId);
+  }
+
+  /**
+   * Cancel a transaction
+   *
+   * @param transactionId the transaction id
+   * @return transaction
+   */
+  public CompletableFuture<ApiResponse<Transaction>> cancelTransaction(Long transactionId) {
+    return this.dvsApiClientHelper.cancelTransaction(transactionId);
 	}
 
 	// Transactions - End
@@ -420,18 +451,5 @@ public class DvsApiClientAsync {
 
 
 	// Balances - End
-
-	// Statement Inquiry - Begin
-
-	/**
-	 * Get statement for an account number
-	 *
-	 * @return statement details
-	 */
-	private CompletableFuture<ApiResponse<List<StatementDetail>>> getStatement(StatementFilter statementFilter) {
-		return this.dvsApiClientHelper.getStatement(statementFilter);
-	}
-
-	// Statement Inquiry - End
 	
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import com.dtone.dvs.dto.ApiError;
 import com.dtone.dvs.dto.ApiResponse;
 import com.dtone.dvs.dto.ErrorResponse;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -50,12 +51,12 @@ public class ApiResponseBuilderAsync {
 						apiResponse.setErrors(extractResult(response.body(), new TypeReference<ErrorResponse>() {
 						}).getErrors());
 					} else {
-						apiResponse.getErrors().add(new com.dtone.dvs.dto.Error(String.valueOf(statusCode),
-								getReasonPhrase(statusCode)));
+            apiResponse.getErrors().add(new ApiError(String.valueOf(statusCode),
+              getReasonPhrase(statusCode)));
 					}
 				} catch (IOException e) {
-					apiResponse.getErrors().add(new com.dtone.dvs.dto.Error(String.valueOf(statusCode),
-							getReasonPhrase(statusCode)));
+          apiResponse.getErrors().add(new ApiError(String.valueOf(statusCode),
+            getReasonPhrase(statusCode)));
 				} finally {
 					try {
 						response.body().close();

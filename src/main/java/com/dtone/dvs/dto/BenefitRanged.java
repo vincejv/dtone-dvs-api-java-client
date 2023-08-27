@@ -1,25 +1,20 @@
 package com.dtone.dvs.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Source extends ProductSource {
+public class BenefitRanged extends Benefit {
 
   @JsonProperty(value = "amount")
-  private Double amount;
+  private BenefitAmountRanged amount;
 
-  public Source(String unitType, String unit, Double amount) {
-    super(unitType, unit);
-    this.amount = amount;
-  }
 }

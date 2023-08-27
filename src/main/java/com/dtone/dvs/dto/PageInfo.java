@@ -9,8 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Error {
-	private String code;
-	private String message;
-
+public class PageInfo {
+  private int totalPages;
+  private int totalRecords;
+  private int currentPage;
+  private int recordsPerPage;
+  private int nextPage;
+  private int previousPage;
 }

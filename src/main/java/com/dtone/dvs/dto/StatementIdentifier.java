@@ -1,7 +1,6 @@
 package com.dtone.dvs.dto;
 
-import java.math.BigDecimal;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,14 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class AccountBalance {
-	@JsonProperty(value = "unit_type")
-	private UnitTypes unitType;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class StatementIdentifier {
 
-	@JsonProperty(value = "unit")
-	private String unit;
+  @JsonProperty(value = "reference")
+  private String reference;
 
-	@JsonProperty(value = "amount")
-	private BigDecimal amount;
+  @JsonProperty(value = "due_date")
+  private String dueDate;
 
 }

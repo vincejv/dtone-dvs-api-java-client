@@ -12,14 +12,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Country {
-  @JsonProperty(value = "iso_code")
-  private String isoCode;
+public class ProductRanged extends Product {
 
-  private String name;
+  @JsonProperty(value = "benefits")
+  private List<BenefitRanged> benefits;
 
-  private List<Region> regions;
+  @JsonProperty(value = "source")
+  private SourceRanged source;
+
+  @JsonProperty(value = "destination")
+  private SourceRanged destination;
+
+  @JsonProperty(value = "prices")
+  private ProductPricesRanged prices;
 
 }

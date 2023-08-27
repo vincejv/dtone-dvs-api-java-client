@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class ErrorResponse {
-	private List<Error> errors;
+	private List<ApiError> errors;
 
 }

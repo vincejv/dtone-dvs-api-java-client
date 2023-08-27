@@ -1,7 +1,6 @@
 package com.dtone.dvs.dto;
 
-import java.util.Date;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,11 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Dates {
-	@JsonProperty(value = "due")
-	private Date due;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ProductSource {
 
-	@JsonProperty(value = "statement")
-	private Date statement;
+  @JsonProperty(value = "unit_type")
+  private String unitType;
+
+  @JsonProperty(value = "unit")
+  private String unit;
 
 }

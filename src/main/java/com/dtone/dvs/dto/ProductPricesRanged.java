@@ -12,11 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Values {
+public class ProductPricesRanged {
 
-	@JsonProperty(value = "source")
-	private Source source;
+  @JsonProperty(value = "wholesale")
+  private ProductPriceRanged wholesale;
 
-	@JsonProperty(value = "destination")
-	private Source destination;
+  @JsonProperty(value = "retail")
+  private ProductPriceRanged retail;
+
 }

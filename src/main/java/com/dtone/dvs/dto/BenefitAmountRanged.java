@@ -12,11 +12,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Values {
+public class BenefitAmountRanged {
 
-	@JsonProperty(value = "source")
-	private Source source;
+  @JsonProperty(value = "base")
+  private AmountRanged base;
 
-	@JsonProperty(value = "destination")
-	private Source destination;
+  @JsonProperty(value = "promotion_bonus")
+  private AmountRanged promotionBonus;
+
+  @JsonProperty(value = "total_excluding_tax")
+  private AmountRanged totalExcludingTax;
+
+  @JsonProperty(value = "total_including_tax")
+  private AmountRanged totalIncludingTax;
+
 }

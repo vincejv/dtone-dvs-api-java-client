@@ -19,77 +19,114 @@ public class PageAsync<T> {
 	private int totalPages;
 	private int totalRecords;
 	private int currentPage;
-	private int recordsPerPage;
-	private int nextPage;
-	private int previousPage;
+  private int recordsPerPage;
+  private int nextPage;
+  private int previousPage;
 
-	public PageAsync(String apiOperation, String url, String apiKey, String apiSecret, T apiResponse) {
-		this.apiOperation = apiOperation;
-		this.dvsClient = new DvsApiClientAsync(url, apiKey, apiSecret);
-		this.first = apiResponse;
-	}
+  public PageAsync(String apiOperation, String url, String apiKey, String apiSecret, T apiResponse) {
+    this.apiOperation = apiOperation;
+    this.dvsClient = new DvsApiClientAsync(url, apiKey, apiSecret);
+    this.first = apiResponse;
+  }
 
-	public boolean hasNext() {
-		return totalPages > currentPage;
-	}
+  public PageAsync(String apiOperation, int totalPages, int totalRecords, int currentPage, int recordsPerPage,
+                   int nextPage, int previousPage) {
+    this.dvsClient = null;
+    this.apiOperation = apiOperation;
+    this.totalPages = totalPages;
+    this.totalRecords = totalRecords;
+    this.currentPage = currentPage;
+    this.recordsPerPage = recordsPerPage;
+    this.nextPage = nextPage;
+    this.previousPage = previousPage;
+  }
 
-	public boolean hasPrevious() {
-		return currentPage > 1;
-	}
+  /**
+   * Has next page
+   *
+   * @return if next page is available
+   */
+  public boolean hasNext() {
+    return totalPages > currentPage;
+  }
 
-	public T next() {
-		setCurrentPage(getCurrentPage() + 1);
-		return getApiResponse();
-	}
-	
-	public T previous() {
-		setCurrentPage(getCurrentPage() - 1);
-		return getApiResponse();
-	}
-	
-	public T last() {
-		setCurrentPage(getTotalPages());
-		return getApiResponse();
-	}
+  /**
+   * Has previous page
+   *
+   * @return if previous page is available
+   */
+  public boolean hasPrevious() {
+    return currentPage > 1;
+  }
 
-	private T getApiResponse() {
-		T t = null;
+  /**
+   * Has next page
+   *
+   * @return if next page is available
+   */
+  public T next() {
+    setCurrentPage(getCurrentPage() + 1);
+    return getApiResponse();
+  }
 
-		switch (this.apiOperation) {
-		case Constants.PRODUCTS:
-			t = (T) dvsClient.getProducts(getCurrentPage(), getRecordsPerPage());
-			break;
-		case Constants.SERVICES:
-			t = (T) dvsClient.getServices(getCurrentPage(), getRecordsPerPage());
-			break;
-		case Constants.OPERATORS:
-			t = (T) dvsClient.getOperators(getCurrentPage(), getRecordsPerPage());
-			break;
-		case Constants.PROMOTIONS:
-			t = (T) dvsClient.getPromotions(getCurrentPage(), getRecordsPerPage());
-			break;
-		case Constants.BENEFIT_TYPES:
-			t = (T) dvsClient.getBenefitTypes(getCurrentPage(), getRecordsPerPage());
-			break;
-		case Constants.BALANCES:
-			t = (T) dvsClient.getBalances(getCurrentPage(), getRecordsPerPage());
-			break;
-		case Constants.COUNTRIES:
-			t = (T) dvsClient.getCountries(getCurrentPage(), getRecordsPerPage());
-			break;
-		default:
+  /**
+   * Get previous page
+   *
+   * @return the previous page
+   */
+  public T previous() {
+    setCurrentPage(getCurrentPage() - 1);
+    return getApiResponse();
+  }
 
-		}
+  /**
+   * Get last page
+   *
+   * @return the last page
+   */
+  public T last() {
+    setCurrentPage(getTotalPages());
+    return getApiResponse();
+  }
 
-		return t;
-	}
+  private T getApiResponse() {
+    T t;
 
-	public T first() {
-		if(getCurrentPage() <= 1) {
-			return first;
-		} else {
-			setCurrentPage(1);
-			return getApiResponse();
-		}
-	}
+    t = switch (this.apiOperation) {
+      case Constants.PRODUCTS -> (T) dvsClient.getProducts(getCurrentPage(), getRecordsPerPage());
+      case Constants.SERVICES -> (T) dvsClient.getServices(getCurrentPage(), getRecordsPerPage());
+      case Constants.OPERATORS -> (T) dvsClient.getOperators(getCurrentPage(), getRecordsPerPage());
+      case Constants.PROMOTIONS -> (T) dvsClient.getPromotions(getCurrentPage(), getRecordsPerPage());
+      case Constants.BENEFIT_TYPES -> (T) dvsClient.getBenefitTypes(getCurrentPage(), getRecordsPerPage());
+      case Constants.BALANCES -> (T) dvsClient.getBalances(getCurrentPage(), getRecordsPerPage());
+      case Constants.COUNTRIES -> (T) dvsClient.getCountries(getCurrentPage(), getRecordsPerPage());
+      default -> null;
+    };
+
+    return t;
+  }
+
+  /**
+   * Get first page
+   *
+   * @return the first page
+   */
+  public T first() {
+    if (getCurrentPage() <= 1) {
+      return first;
+    } else {
+      setCurrentPage(1);
+      return getApiResponse();
+    }
+  }
+
+  /**
+   * Get page information
+   *
+   * @return the page information
+   */
+  public PageInfo getPageInfo() {
+    return new PageInfo(totalPages, totalRecords, currentPage, recordsPerPage, nextPage, previousPage);
+  }
+
 }

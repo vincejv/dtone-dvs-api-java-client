@@ -9,16 +9,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-public class Amount {
+@EqualsAndHashCode(callSuper = true)
+public class BenefitAmountFixed extends Benefit {
 
   @JsonProperty(value = "base")
-  private AmountValue base;
+  private Double base;
 
   @JsonProperty(value = "promotion_bonus")
-  private AmountValue promotionBonus;
+  private Double promotionBonus;
 
   @JsonProperty(value = "total_excluding_tax")
-  private AmountValue totalExcludingTax;
+  private Double totalExcludingTax;
+
+  @JsonProperty(value = "total_including_tax")
+  private Double totalIncludingTax;
 
 }
