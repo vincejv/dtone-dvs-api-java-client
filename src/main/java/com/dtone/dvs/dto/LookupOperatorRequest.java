@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @JsonInclude(Include.NON_NULL)
 @Data
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ToString(callSuper = true)
 public class LookupOperatorRequest extends ApiRequest {
 
   @JsonProperty(value = "mobile_number")

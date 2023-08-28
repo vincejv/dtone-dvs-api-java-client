@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class BenefitAmountFixed extends Benefit {
+@EqualsAndHashCode
+public class BenefitAmountFixed {
 
   @JsonProperty(value = "base")
   private Double base;

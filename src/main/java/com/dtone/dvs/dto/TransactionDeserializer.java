@@ -1,6 +1,7 @@
 package com.dtone.dvs.dto;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.util.List;
 
 import com.dtone.dvs.util.ProductUtils;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 public class TransactionDeserializer extends StdDeserializer<Transaction> {
 
+  @Serial
   private static final long serialVersionUID = -6186626005507523730L;
   private static final ObjectMapper mapper = new ObjectMapper();
 

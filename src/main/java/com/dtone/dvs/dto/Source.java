@@ -7,12 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@ToString(callSuper = true)
 public class Source extends ProductSource {
 
   @JsonProperty(value = "amount")
