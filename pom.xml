@@ -45,7 +45,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<compiler-plugin.version>3.11.0</compiler-plugin.version>
 		<maven.compiler.release>17</maven.compiler.release>
-		<org.projectlombok.version>1.18.28</org.projectlombok.version>
+		<org.projectlombok.version>1.18.30</org.projectlombok.version>
 		<jacoco.version>0.8.10</jacoco.version>
 
     <sonar.organization>vincejv</sonar.organization>
@@ -113,7 +113,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.28</version>
+			<version>1.18.30</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
